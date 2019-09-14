@@ -32,7 +32,7 @@ const search = document.getElementById('search');
 
 getButton.addEventListener("click", (e) =>{
   e.preventDefault();
- firebase.firestore().collection("items").onSnapshot((snaps) => {
+ firebase.firestore().collection("items").orderBy("date").onSnapshot((snaps) => {
     snaps.forEach((doc) => {
       const headers = ['item', 'bestBefore', 'location', 'date'] 
       let i;
@@ -44,6 +44,9 @@ getButton.addEventListener("click", (e) =>{
         for (i of headers){
             const item = document.createElement("td");
             item.textContent = (doc.data()[i]);
+            if (i=="date"){
+              item.textContent = Date(doc.data()[i]);
+            }
             row.appendChild(item);
         }
       }
