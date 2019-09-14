@@ -59,7 +59,15 @@ function populateTable(){
             row.appendChild(item);
         }
       }
-    body.appendChild(row)
+    let remove = document.createElement("button");
+    remove.innerHTML = "X";
+    remove.onclick = function() {removeitem(doc.data().item);}
+    row.appendChild(remove);
+    body.appendChild(row);
     });
  });
+}
+
+function removeitem(item){
+  firebase.firestore().collection("items").doc(item).delete();
 }
