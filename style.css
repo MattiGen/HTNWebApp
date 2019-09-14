@@ -1,3 +1,6 @@
 h1, h2 {
   font-family: Lato;
 }
+.fridge {
+	background-image: url("./assets/avocado");
+}
