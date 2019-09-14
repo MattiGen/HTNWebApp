@@ -34,7 +34,7 @@ getButton.addEventListener("click", (e) =>{
   e.preventDefault();
  firebase.firestore().collection("reagents").onSnapshot((snaps) => {
     snaps.forEach((doc) => {
-      const headers = ['reagent', 'temp'] 
+      const headers = ['item', 'bestBefore', 'location', 'date'] 
       let i;
       const row = document.createElement("tr");
       if (search.value != undefined) {
