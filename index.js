@@ -34,10 +34,13 @@ getButton.addEventListener("submit", (e) =>{
   e.preventDefault();
  firebase.firestore().collection("reagents").onSnapshot((snaps) => {
     snaps.forEach((doc) => {
-      const headers = ['name', 'temp'] 
+      const headers = ['reagent', 'temp'] 
       let i;
       const row = document.createElement("tr");
-      if (doc.data().name.toLowerCase().includes(search.value.toLowerCase())){
+      if (search.value != undefined) {
+        search.value = search.value.toLowerCase()
+      }
+      if (doc.data().reagent.toLowerCase().includes(search.value)){
         for (i of headers){
             const item = document.createElement("td");
             item.textContent = (doc.data()[i]);
