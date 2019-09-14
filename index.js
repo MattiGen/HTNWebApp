@@ -33,15 +33,14 @@ const body = document.getElementById('body');
 
 getButton.addEventListener("click", (e) =>{
   e.preventDefault();
-  body.innerHTML = "";
   populateTable();
- 
 });
 
 window.onload = populateTable()
 
 function populateTable(){
   firebase.firestore().collection("items").orderBy("date").onSnapshot((snaps) => {
+    body.innerHTML = "";
     snaps.forEach((doc) => {
       const headers = ['item', 'bestBefore', 'location', 'date'] 
       let i;
