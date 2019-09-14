@@ -26,14 +26,23 @@ if (firebaseConfig && firebaseConfig.apiKey) {
   firebase.initializeApp(firebaseConfig);
 }
 
-const names = document.getElementById('names');
+const table = document.getElementById('table');
 const getButton = document.getElementById('get');
 
 getButton.addEventListener("submit", (e) =>{
   e.preventDefault();
  firebase.firestore().collection("reagents").onSnapshot((snaps) => {
     snaps.forEach((doc) => {
-      console.log(doc.data());
+      const headers = ['name', 'temp'] 
+      let i;
+      const row = document.createElement("tr");
+
+      for (i of headers){
+        const item = document.createElement("td");
+        item.textContent = (doc.data()[i]);
+        row.appendChild(item);
+      }
+    table.appendChild(row)
     });
  });
 });
