@@ -20,10 +20,20 @@ const firebaseConfig = {
   appId: "1:536814220584:web:2ff8b8d8f22ab2e4344c1d"
 };
 
+// Initialize Firebase
+if (firebaseConfig && firebaseConfig.apiKey) {
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+}
+
 const names = document.getElementById('names');
 const getButton = document.getElementById('get');
 
 getButton.addEventListener("submit", (e) =>{
-  console.log("Hi");
-})
-
+  e.preventDefault();
+ firebase.firestore().collection("reagents").onSnapshot((snaps) => {
+    snaps.forEach((doc) => {
+      console.log(doc.data());
+    });
+ });
+});
