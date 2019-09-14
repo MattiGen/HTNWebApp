@@ -30,7 +30,7 @@ const table = document.getElementById('table');
 const getButton = document.getElementById('get');
 const search = document.getElementById('search');
 
-getButton.addEventListener("submit", (e) =>{
+getButton.addEventListener("click", (e) =>{
   e.preventDefault();
  firebase.firestore().collection("reagents").onSnapshot((snaps) => {
     snaps.forEach((doc) => {
@@ -42,6 +42,7 @@ getButton.addEventListener("submit", (e) =>{
       }
       if (doc.data().reagent.toLowerCase().includes(search.value)){
         for (i of headers){
+            console.log(doc.data()[i])
             const item = document.createElement("td");
             item.textContent = (doc.data()[i]);
             row.appendChild(item);
