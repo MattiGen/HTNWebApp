@@ -28,6 +28,7 @@ if (firebaseConfig && firebaseConfig.apiKey) {
 
 const table = document.getElementById('table');
 const getButton = document.getElementById('get');
+const search = document.getElementById('search');
 
 getButton.addEventListener("submit", (e) =>{
   e.preventDefault();
@@ -36,11 +37,12 @@ getButton.addEventListener("submit", (e) =>{
       const headers = ['name', 'temp'] 
       let i;
       const row = document.createElement("tr");
-
-      for (i of headers){
-        const item = document.createElement("td");
-        item.textContent = (doc.data()[i]);
-        row.appendChild(item);
+      if (doc.data().name.toLowerCase().includes(search.value.toLowerCase())){
+        for (i of headers){
+            const item = document.createElement("td");
+            item.textContent = (doc.data()[i]);
+            row.appendChild(item);
+        }
       }
     table.appendChild(row)
     });
