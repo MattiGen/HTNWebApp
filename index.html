@@ -3,9 +3,6 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 
 </head><body><div id="names"></div>
-<form id="get">
-  
-</form>
 
 <nav class="navbar navbar-dark bg-dark flex-md-nowrap p-0 shadow">
   <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Project Thor</a>
@@ -14,12 +11,12 @@
 <div class="container-fluid">
 	<div class="row form-group mb-2">
 			<input class="form-control form-control-dark mx-2 mt-2 w-25" type="text" placeholder="Search" id="search">
-			<button type="submit" class="btn btn-primary mt-2">Find reagent</button>
+			<button type="submit" class="btn btn-primary mt-2" id="get">Find reagent</button>
 	</div>
 	<div class="row">
 		<div class="col">
 			<div class="table-responsive">
-				<table class="table	table-hover table-striped px-5 mt-0">
+				<table class="table	table-hover table-striped px-5 mt-0" id="table">
 				  <thead>
 					<tr>
 					  <th scope="col">Reagent</th>
@@ -27,23 +24,6 @@
 					  <th scope="col">Date</th>
 					</tr>
 				  </thead>
-				  <tbody>
-					<tr>
-					  <td>Nitrogen</td>
-					  <td>Upstairs</td>
-					  <td>September 5, 2019</td>
-					</tr>
-					<tr>
-					  <td>Oxygen</td>
-					  <td>Kitchen</td>
-					  <td>March 3, 2018</td>
-					</tr>
-					<tr>
-					  <td>Carbon</td>
-					  <td>Back cabinet</td>
-					  <td>January 20, 2019</td>
-					</tr>
-				  </tbody>
 				</table>
 			</div>
 		</div>
