@@ -29,10 +29,19 @@ if (firebaseConfig && firebaseConfig.apiKey) {
 const table = document.getElementById('table');
 const getButton = document.getElementById('get');
 const search = document.getElementById('search');
+const body = document.getElementById('body');
 
 getButton.addEventListener("click", (e) =>{
   e.preventDefault();
- firebase.firestore().collection("items").orderBy("date").onSnapshot((snaps) => {
+  body.innerHTML = "";
+  populateTable();
+ 
+});
+
+window.onload = populateTable()
+
+function populateTable(){
+  firebase.firestore().collection("items").orderBy("date").onSnapshot((snaps) => {
     snaps.forEach((doc) => {
       const headers = ['item', 'bestBefore', 'location', 'date'] 
       let i;
@@ -45,12 +54,13 @@ getButton.addEventListener("click", (e) =>{
             const item = document.createElement("td");
             item.textContent = (doc.data()[i]);
             if (i=="date"){
-              item.textContent = Date(doc.data()[i]);
+              let date = Date(doc.data()[i]);
+              item.textContent = date.slice(0, 15);
             }
             row.appendChild(item);
         }
       }
-    table.appendChild(row)
+    body.appendChild(row)
     });
  });
-});
+}
