@@ -37,17 +37,11 @@ const imgSearchOptions = "&Count=1";
 const table = document.getElementById('table');
 const getButton = document.getElementById('get');
 const search = document.getElementById('search');
-<<<<<<< Updated upstream
-=======
 const body = document.getElementById('body');
 const fridge = document.getElementById('fridge');
->>>>>>> Stashed changes
 
-getButton.addEventListener("submit", (e) =>{
+getButton.addEventListener("click", (e) =>{
   e.preventDefault();
-<<<<<<< Updated upstream
- firebase.firestore().collection("reagents").onSnapshot((snaps) => {
-=======
   body.innerHTML = "";
   populateTable();
   updateFridge(search.value);
@@ -57,27 +51,27 @@ window.onload = populateTable()
 
 function populateTable(){
   firebase.firestore().collection("items-playground").orderBy("date").onSnapshot((snaps) => {
->>>>>>> Stashed changes
     snaps.forEach((doc) => {
-      const headers = ['reagent', 'temp'] 
+      const headers = ['item', 'bestBefore', 'location', 'date'] 
       let i;
       const row = document.createElement("tr");
       if (search.value != undefined) {
         search.value = search.value.toLowerCase()
       }
-      if (doc.data().reagent.toLowerCase().includes(search.value)){
+      if (doc.data().item.toLowerCase().includes(search.value)){
         for (i of headers){
             const item = document.createElement("td");
             item.textContent = (doc.data()[i]);
+            if (i=="date"){
+              let date = Date(doc.data()[i]);
+              item.textContent = date.slice(0, 15);
+            }
             row.appendChild(item);
         }
       }
-    table.appendChild(row)
+    body.appendChild(row)
     });
  });
-<<<<<<< Updated upstream
-});
-=======
 }
 
 function updateFridge(foodName) {
@@ -125,4 +119,3 @@ function handleBingResponse() {
     console.log(jsobj["Images"]);
 
 }
->>>>>>> Stashed changes
