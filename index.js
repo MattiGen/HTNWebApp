@@ -31,7 +31,8 @@ const getButton = document.getElementById('get');
 const search = document.getElementById('search');
 const body = document.getElementById('body');
 const addButton = document.getElementById('add');
-const addForm = document.getElementById('addForm')
+const addForm = document.getElementById('addForm');
+const clearSearch = document.getElementById('clear');
 
 getButton.addEventListener("click", (e) =>{
   e.preventDefault();
@@ -41,6 +42,13 @@ getButton.addEventListener("click", (e) =>{
 addButton.addEventListener("click", (e) => {
   addForm.style.display = 'block';
 });
+
+clearSearch.addEventListener("click", (e)=>{
+  console.log('a');
+  e.preventDefault();
+  search.value="";
+  populateTable();
+})
 
 addForm.addEventListener("submit", (e)=>{
   e.preventDefault();
@@ -80,11 +88,12 @@ function populateTable(){
             }
             row.appendChild(item);
         }
+        let remove = document.createElement("button");
+        remove.innerHTML = "X";
+        remove.onclick = function() {removeitem(doc.data().item);}
+        row.appendChild(remove);
       }
-    let remove = document.createElement("button");
-    remove.innerHTML = "X";
-    remove.onclick = function() {removeitem(doc.data().item);}
-    row.appendChild(remove);
+    
     body.appendChild(row);
     });
  });
@@ -92,4 +101,5 @@ function populateTable(){
 
 function removeitem(item){
   firebase.firestore().collection("items").doc(item.toLowerCase()).delete();
+  
 }
