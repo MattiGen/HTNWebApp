@@ -31,7 +31,8 @@ const getButton = document.getElementById('get');
 const search = document.getElementById('search');
 const body = document.getElementById('body');
 const addButton = document.getElementById('add');
-const addForm = document.getElementById('addForm')
+const addForm = document.getElementById('addForm');
+const clearSearch = document.getElementById('clear');
 
 getButton.addEventListener("click", (e) =>{
   e.preventDefault();
@@ -41,6 +42,13 @@ getButton.addEventListener("click", (e) =>{
 addButton.addEventListener("click", (e) => {
   addForm.style.display = 'block';
 });
+
+clearSearch.addEventListener("click", (e)=>{
+  console.log('a');
+  e.preventDefault();
+  search.value="";
+  populateTable();
+})
 
 addForm.addEventListener("submit", (e)=>{
   e.preventDefault();
