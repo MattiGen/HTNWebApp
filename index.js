@@ -30,11 +30,31 @@ const table = document.getElementById('table');
 const getButton = document.getElementById('get');
 const search = document.getElementById('search');
 const body = document.getElementById('body');
+const addButton = document.getElementById('add');
+const addForm = document.getElementById('addForm')
 
 getButton.addEventListener("click", (e) =>{
   e.preventDefault();
   populateTable();
 });
+
+addButton.addEventListener("click", (e) => {
+  addForm.style.display = 'block';
+});
+
+addForm.addEventListener("submit", (e)=>{
+  e.preventDefault();
+  const name=document.getElementById('itemName');
+  const bestBefore=document.getElementById('bestBefore');
+  const location=document.getElementById('location');
+  firebase.firestore().collection("items").doc(name.value).set({   
+   item: name.value,
+   date: Date.now(),
+   location: location.value,
+   bestBefore: bestBefore.value
+  });
+  addForm.style.display = 'none';
+})
 
 window.onload = populateTable()
 
