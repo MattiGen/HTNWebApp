@@ -47,12 +47,14 @@ addForm.addEventListener("submit", (e)=>{
   const name=document.getElementById('itemName');
   const bestBefore=document.getElementById('bestBefore');
   const location=document.getElementById('location');
-  firebase.firestore().collection("items").doc(name.value).set({   
-   item: name.value,
-   date: Date.now(),
-   location: location.value,
-   bestBefore: bestBefore.value
-  });
+  if (name.value && location.value && bestBefore.value){
+    firebase.firestore().collection("items").doc(name.value).set({   
+    item: name.value,
+    date: Date.now(),
+    location: location.value,
+    bestBefore: bestBefore.value
+    });
+  }
   addForm.style.display = 'none';
 })
 
