@@ -29,11 +29,12 @@ if (firebaseConfig && firebaseConfig.apiKey) {
 const API_KEY_COOKIE = "170c2be84e10421eb44d128f88c4d76c";
 const CLIENT_ID_COOKIE = "bing-search-client-id";
 // The Bing Image Search API endpoint
-const BING_ENDPOINT = "https://api.cognitive.microsoft.com/bing/v7.0/images/search";
+const BING_IMAGES_ENDPOINT = "https://api.cognitive.microsoft.com/bing/v7.0/images/search";
+const BING_WEB_ENDPOINT = "https://api.cognitive.microsoft.com/bing/v7.0/search";
 
-const imgSearchOptions = "&Count=1";
-//"&mkt=en-US&count=3&safeSearch=Strict&imageType=Clipart&size=Medium";
-
+const imgSearchOptions = "&mkt=en-US&count=25&safeSearch=Strict&aspect=Square&imageType=Clipart&size=Medium";
+const recipeSearchOptions = "&mkt=en-US&count=25&safeSearch=Strict&responseFilter=Webpages";
+//
 const table = document.getElementById('table');
 const getButton = document.getElementById('get');
 const search = document.getElementById('search');
@@ -43,14 +44,17 @@ const fridge = document.getElementById('fridge');
 getButton.addEventListener("click", (e) =>{
   e.preventDefault();
   body.innerHTML = "";
+  fridge.innerHTML = "";
   populateTable();
-  updateFridge(search.value);
+  if(search.value != "") {
+    updateFridge(search.value);
+  }
 });
 
 window.onload = populateTable()
 
 function populateTable(){
-  firebase.firestore().collection("items-playground").orderBy("date").onSnapshot((snaps) => {
+  firebase.firestore().collection("items").orderBy("date").onSnapshot((snaps) => {
     snaps.forEach((doc) => {
       const headers = ['item', 'bestBefore', 'location', 'date'] 
       let i;
@@ -66,8 +70,9 @@ function populateTable(){
               let date = Date(doc.data()[i]);
               item.textContent = date.slice(0, 15);
             }
-            row.appendChild(item);
+            row.appendChild(item); 
         }
+        updateFridge(doc.data().item.toLowerCase());
       }
     body.appendChild(row)
     });
@@ -75,47 +80,101 @@ function populateTable(){
 }
 
 function updateFridge(foodName) {
-  var queryString = BING_ENDPOINT + "?q=" + foodName + imgSearchOptions;
-  var request = new XMLHttpRequest();
+  var imgQueryString = BING_IMAGES_ENDPOINT + "?q=" + foodName + imgSearchOptions;
+  var recipeQueryString = BING_WEB_ENDPOINT + "?q=" + "recipes%20thatuse%20" + foodName + recipeSearchOptions;
+  var imgRequest = new XMLHttpRequest();
+  var recipeRequest = new XMLHttpRequest();
+  var imgUrl = "";
+  var recipeUrl = "";
   try {
-    request.open("GET", queryString)
+    imgRequest.open("GET", imgQueryString)
   } catch (e) {
-    renderErrorMessage("Bad request (invalid URL)" + queryString);
+    renderErrorMessage("Bad request (invalid URL)" + imgQueryString);
   }
-  request.setRequestHeader("Ocp-Apim-Subscription-Key", API_KEY_COOKIE);
-  request.setRequestHeader("Accept", "application/json");
-
-  request.addEventListener("load", handleBingResponse);
-
-  // event handler for erorrs
-  request.addEventListener("error", function() {
-      renderErrorMessage("Error completing request");
-  });
-
-  // event handler for aborted request
-  request.addEventListener("abort", function() {
-      renderErrorMessage("Request aborted");
-  });
-
+  try {
+    recipeRequest.open("GET", recipeQueryString)
+  } catch (e) {
+    renderErrorMessage("Bad request (invalid URL)" + recipeQueryString);
+  }
+  imgRequest.setRequestHeader("Ocp-Apim-Subscription-Key", API_KEY_COOKIE);
+  imgRequest.setRequestHeader("Accept", "application/json");
+  recipeRequest.setRequestHeader("Ocp-Apim-Subscription-Key", API_KEY_COOKIE);
+  recipeRequest.setRequestHeader("Accept", "application/json");
+  imgRequest.onreadystatechange = function() {
+    if (imgRequest.readyState == XMLHttpRequest.DONE) {
+        imgUrl = HandleBingImageResponse(imgRequest.responseText);
+    }
+    if(imgUrl!="" && recipeUrl!=""){
+      fridge.innerHTML = fridge.innerHTML + "<div class=\"border rounded text-center food-item\"> <a href=\"" + recipeUrl + "\"> <img src=\"" + imgUrl + "\" class=\"img-fluid\" alt=\"Responsive image\"> </a> </div>";
+    }
+  }
+  recipeRequest.onreadystatechange = function() {
+    if (recipeRequest.readyState == XMLHttpRequest.DONE) {
+        recipeUrl = HandleBingRecipeResponse(recipeRequest.responseText);
+    }
+    if(imgUrl!="" && recipeUrl!=""){
+      fridge.innerHTML = fridge.innerHTML + "<div class=\"border rounded text-center food-item\"> <a href=\"" + recipeUrl + "\"> <img src=\"" + imgUrl + "\" class=\"img-fluid\" alt=\"Responsive image\"> </a> </div>";
+    }
+  }
   // send the request
-  request.send();
-  console.log(queryString);
+  imgRequest.send();
+  recipeRequest.send();
+  console.log(imgUrl);
   return false;
 }
 
-function handleBingResponse() {
-    var json = this.responseText.trim();
-    var jsobj = {};
+function HandleBingImageResponse(json) {
+  json = json.trim();
+  var jsobj = {};
 
-    // try to parse JSON results
-    try {
-        if (json.length) jsobj = JSON.parse(json);
-    } catch(e) {
-        renderErrorMessage("Invalid JSON response");
-    }
+  // try to parse JSON results
+  try {
+      if (json.length) jsobj = JSON.parse(json);
+  } catch(e) {
+      renderErrorMessage("Invalid JSON response");
+  }
+  
+  // show raw JSON and HTTP request
+  //console.log(JSON.stringify(jsobj, null, 2));
+  //console.log(jsobj.value[0].contentUrl);
+  var imgUrl = ""
+  var httpsRegex = /(https:\/\/).*/;
+  var index = -1;
+  while(!httpsRegex.test(imgUrl) && index < 25) {
+    index = index + 1;
+    imgUrl = jsobj.value[index].contentUrl;
+  }
+  if(index < 25) {
+    //console.log(imgUrl);
+    return imgUrl;
+  }
+  return "";
+}
 
-    // show raw JSON and HTTP request
-    console.log(JSON.stringify(jsobj, null, 2));
-    console.log(jsobj["Images"]);
+function HandleBingRecipeResponse(json) {
+  json = json.trim();
+  var jsobj = {};
 
+  // try to parse JSON results
+  try {
+      if (json.length) jsobj = JSON.parse(json);
+  } catch(e) {
+      renderErrorMessage("Invalid JSON response");
+  }
+  
+  // show raw JSON and HTTP request
+  //console.log(JSON.stringify(jsobj, null, 2));
+  //console.log(jsobj.value[0].contentUrl);
+  var recipeUrl = ""
+  var httpsRegex = /(https:\/\/).*/;
+  var index = -1;
+  while(!httpsRegex.test(recipeUrl) && index < 25) {
+    index = index + 1;
+    recipeUrl = jsobj.webPages.value[index].url;
+  }
+  if(index < 25) {
+    //console.log(recipeUrl);
+    return recipeUrl;
+  }
+  return "";
 }
