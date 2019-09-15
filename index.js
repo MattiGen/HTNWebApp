@@ -48,7 +48,7 @@ addForm.addEventListener("submit", (e)=>{
   const bestBefore=document.getElementById('bestBefore');
   const location=document.getElementById('location');
   if (name.value && location.value && bestBefore.value){
-    firebase.firestore().collection("items").doc(name.value).set({   
+    firebase.firestore().collection("items").doc(name.value.toLowerCase()).set({   
     item: name.value,
     date: Date.now(),
     location: location.value,
@@ -91,5 +91,5 @@ function populateTable(){
 }
 
 function removeitem(item){
-  firebase.firestore().collection("items").doc(item).delete();
+  firebase.firestore().collection("items").doc(item.toLowerCase()).delete();
 }
