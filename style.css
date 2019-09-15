@@ -3,3 +3,13 @@
 h1, h2 {
   font-family: Lato;
 }
+.food-item {
+  max-width: 100px;
+  height: auto;
+}
+.vertical-center
+{
+ display: table-cell;
+ float: none;
+ vertical-align: middle;
+}
