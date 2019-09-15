@@ -12,7 +12,15 @@
 	<div class="row form-group mb-2">
 			<input class="form-control form-control-dark mx-2 mt-2 w-25" type="text" placeholder="Search" id="search">
 			<button type="submit" class="btn btn-primary mt-2" id="get">Find Item</button>
+      <button type="submit" class="btn btn-primary mt-2" id="add">Add Item</button>
 	</div>
+  <form style="display: none" id="addForm">
+    <input id="itemName" placeholder="Name">
+    <input id="bestBefore" placeholder="Best Before Date">
+    <input id="location" placeholder="Location">
+    <button type="submit" class="btn btn-primary mt-2" id='finishAdd'> Submit</button>
+  </form>
+
 	<div class="row">
 		<div class="col">
 			<div class="table-responsive">

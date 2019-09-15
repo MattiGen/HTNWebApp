@@ -30,11 +30,33 @@ const table = document.getElementById('table');
 const getButton = document.getElementById('get');
 const search = document.getElementById('search');
 const body = document.getElementById('body');
+const addButton = document.getElementById('add');
+const addForm = document.getElementById('addForm')
 
 getButton.addEventListener("click", (e) =>{
   e.preventDefault();
   populateTable();
 });
+
+addButton.addEventListener("click", (e) => {
+  addForm.style.display = 'block';
+});
+
+addForm.addEventListener("submit", (e)=>{
+  e.preventDefault();
+  const name=document.getElementById('itemName');
+  const bestBefore=document.getElementById('bestBefore');
+  const location=document.getElementById('location');
+  if (name.value && location.value && bestBefore.value){
+    firebase.firestore().collection("items").doc(name.value).set({   
+    item: name.value,
+    date: Date.now(),
+    location: location.value,
+    bestBefore: bestBefore.value
+    });
+  }
+  addForm.style.display = 'none';
+})
 
 window.onload = populateTable()
 
@@ -59,7 +81,15 @@ function populateTable(){
             row.appendChild(item);
         }
       }
-    body.appendChild(row)
+    let remove = document.createElement("button");
+    remove.innerHTML = "X";
+    remove.onclick = function() {removeitem(doc.data().item);}
+    row.appendChild(remove);
+    body.appendChild(row);
     });
  });
+}
+
+function removeitem(item){
+  firebase.firestore().collection("items").doc(item).delete();
 }
