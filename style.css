@@ -3,4 +3,11 @@ h1, h2 {
 }
 .fridge {
 	background-image: url("./assets/avocado");
+<<<<<<< Updated upstream
+=======
+}
+.food-item {
+  max-width: 100px;
+  height: auto;
+>>>>>>> Stashed changes
 }
